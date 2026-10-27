@@ -1,0 +1,392 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Team Project Management System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <h2 class="logo">TeamFlow<span>.</span></h2>
+        <p class="side-label">WORKSPACE</p>
+        <nav>
+            <a href="#dashboard" class="nav-link active">🏠 Dashboard</a>
+            <a href="#projects" class="nav-link">📁 My Projects</a>
+            <a href="#tasks" class="nav-link">✅ My Tasks</a>
+        </nav>
+        <div class="sidebar-bottom">
+            <div class="avatar">ST</div>
+            <div>
+                <strong>Student User</strong>
+                <p>Team Member</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">STUDENT WORKSPACE</p>
+                <h1>Student Team Project Management</h1>
+                <p class="subtitle">Plan together. Work smarter. Achieve more.</p>
+            </div>
+            <button class="primary-btn" id="addProjectBtn">+ New Project</button>
+        </header>
+
+        <section id="dashboard">
+            <div class="welcome">
+                <div>
+                    <h2>Welcome to your workspace! 👋</h2>
+                    <p>Keep track of your team's projects and tasks.</p>
+                </div>
+                <div class="welcome-icon">📚</div>
+            </div>
+
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <div class="stat-icon purple">📁</div>
+                    <p>Total Projects</p>
+                    <h2 id="totalProjects">0</h2>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon blue">📋</div>
+                    <p>Total Tasks</p>
+                    <h2 id="totalTasks">0</h2>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon orange">⏳</div>
+                    <p>Pending Tasks</p>
+                    <h2 id="pendingTasks">0</h2>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon green">🎯</div>
+                    <p>Completed Tasks</p>
+                    <h2 id="completedTasks">0</h2>
+                </article>
+            </div>
+        </section>
+
+        <section id="projects" class="content-section">
+            <div class="section-heading">
+                <div>
+                    <h2>My Projects</h2>
+                    <p>Manage your team's academic projects.</p>
+                </div>
+                <button class="secondary-btn" id="viewAllBtn">View All</button>
+            </div>
+            <div id="projectList" class="project-grid"></div>
+        </section>
+
+        <section id="tasks" class="content-section">
+            <div class="section-heading">
+                <div>
+                    <h2>Task Management</h2>
+                    <p>Organize work and monitor task progress.</p>
+                </div>
+                <button class="primary-btn" id="addTaskBtn">+ Add Task</button>
+            </div>
+
+            <div class="task-toolbar">
+                <input type="search" id="searchInput"
+                    placeholder="Search tasks or team members...">
+                <select id="statusFilter" aria-label="Filter tasks by status">
+                    <option value="All">All Statuses</option>
+                    <option value="To Do">To Do</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                </select>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Project</th>
+                            <th>Assigned To</th>
+                            <th>Deadline</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskList"></tbody>
+                </table>
+                <p id="emptyTasks" class="empty-message" hidden>
+                    No tasks found. Add a task to get started!
+                </p>
+            </div>
+        </section>
+
+        <footer>
+            Student Team Project Management System · B.Tech Project
+        </footer>
+    </main>
+
+    <!-- Project form -->
+    <dialog id="projectDialog">
+        <form id="projectForm">
+            <div class="dialog-heading">
+                <h2>Create New Project</h2>
+                <button type="button" class="close-btn"
+                    data-close="projectDialog" aria-label="Close">×</button>
+            </div>
+            <label for="projectName">Project Name</label>
+            <input id="projectName" required maxlength="80"
+                placeholder="e.g. College Event Management">
+
+            <label for="projectDescription">Description</label>
+            <textarea id="projectDescription" maxlength="300"
+                placeholder="Describe your project"></textarea>
+
+            <label for="projectDeadline">Deadline</label>
+            <input type="date" id="projectDeadline" required>
+
+            <div class="dialog-actions">
+                <button type="button" class="secondary-btn"
+                    data-close="projectDialog">Cancel</button>
+                <button type="submit" class="primary-btn">Create Project</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Task form -->
+    <dialog id="taskDialog">
+        <form id="taskForm">
+            <div class="dialog-heading">
+                <h2>Add New Task</h2>
+                <button type="button" class="close-btn"
+                    data-close="taskDialog" aria-label="Close">×</button>
+            </div>
+
+            <label for="taskName">Task Name</label>
+            <input id="taskName" required maxlength="100"
+                placeholder="e.g. Prepare project report">
+
+            <label for="taskProject">Project</label>
+            <select id="taskProject" required></select>
+
+            <label for="taskAssignee">Assigned To</label>
+            <input id="taskAssignee" required maxlength="60"
+                placeholder="Team member name">
+
+            <label for="taskDeadline">Deadline</label>
+            <input type="date" id="taskDeadline" required>
+
+            <label for="taskStatus">Status</label>
+            <select id="taskStatus">
+                <option value="To Do">To Do</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+            </select>
+
+            <div class="dialog-actions">
+                <button type="button" class="secondary-btn"
+                    data-close="taskDialog">Cancel</button>
+                <button type="submit" class="primary-btn">Save Task</button>
+            </div>
+        </form>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Team Project Management System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <h2 class="logo">TeamFlow<span>.</span></h2>
+        <p class="side-label">WORKSPACE</p>
+        <nav>
+            <a href="#dashboard" class="nav-link active">🏠 Dashboard</a>
+            <a href="#projects" class="nav-link">📁 My Projects</a>
+            <a href="#tasks" class="nav-link">✅ My Tasks</a>
+        </nav>
+        <div class="sidebar-bottom">
+            <div class="avatar">ST</div>
+            <div>
+                <strong>Student User</strong>
+                <p>Team Member</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">STUDENT WORKSPACE</p>
+                <h1>Student Team Project Management</h1>
+                <p class="subtitle">Plan together. Work smarter. Achieve more.</p>
+            </div>
+            <button class="primary-btn" id="addProjectBtn">+ New Project</button>
+        </header>
+
+        <section id="dashboard">
+            <div class="welcome">
+                <div>
+                    <h2>Welcome to your workspace! 👋</h2>
+                    <p>Keep track of your team's projects and tasks.</p>
+                </div>
+                <div class="welcome-icon">📚</div>
+            </div>
+
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <div class="stat-icon purple">📁</div>
+                    <p>Total Projects</p>
+                    <h2 id="totalProjects">0</h2>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon blue">📋</div>
+                    <p>Total Tasks</p>
+                    <h2 id="totalTasks">0</h2>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon orange">⏳</div>
+                    <p>Pending Tasks</p>
+                    <h2 id="pendingTasks">0</h2>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon green">🎯</div>
+                    <p>Completed Tasks</p>
+                    <h2 id="completedTasks">0</h2>
+                </article>
+            </div>
+        </section>
+
+        <section id="projects" class="content-section">
+            <div class="section-heading">
+                <div>
+                    <h2>My Projects</h2>
+                    <p>Manage your team's academic projects.</p>
+                </div>
+                <button class="secondary-btn" id="viewAllBtn">View All</button>
+            </div>
+            <div id="projectList" class="project-grid"></div>
+        </section>
+
+        <section id="tasks" class="content-section">
+            <div class="section-heading">
+                <div>
+                    <h2>Task Management</h2>
+                    <p>Organize work and monitor task progress.</p>
+                </div>
+                <button class="primary-btn" id="addTaskBtn">+ Add Task</button>
+            </div>
+
+            <div class="task-toolbar">
+                <input type="search" id="searchInput"
+                    placeholder="Search tasks or team members...">
+                <select id="statusFilter" aria-label="Filter tasks by status">
+                    <option value="All">All Statuses</option>
+                    <option value="To Do">To Do</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                </select>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Project</th>
+                            <th>Assigned To</th>
+                            <th>Deadline</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskList"></tbody>
+                </table>
+                <p id="emptyTasks" class="empty-message" hidden>
+                    No tasks found. Add a task to get started!
+                </p>
+            </div>
+        </section>
+
+        <footer>
+            Student Team Project Management System · B.Tech Project
+        </footer>
+    </main>
+
+    <!-- Project form -->
+    <dialog id="projectDialog">
+        <form id="projectForm">
+            <div class="dialog-heading">
+                <h2>Create New Project</h2>
+                <button type="button" class="close-btn"
+                    data-close="projectDialog" aria-label="Close">×</button>
+            </div>
+            <label for="projectName">Project Name</label>
+            <input id="projectName" required maxlength="80"
+                placeholder="e.g. College Event Management">
+
+            <label for="projectDescription">Description</label>
+            <textarea id="projectDescription" maxlength="300"
+                placeholder="Describe your project"></textarea>
+
+            <label for="projectDeadline">Deadline</label>
+            <input type="date" id="projectDeadline" required>
+
+            <div class="dialog-actions">
+                <button type="button" class="secondary-btn"
+                    data-close="projectDialog">Cancel</button>
+                <button type="submit" class="primary-btn">Create Project</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Task form -->
+    <dialog id="taskDialog">
+        <form id="taskForm">
+            <div class="dialog-heading">
+                <h2>Add New Task</h2>
+                <button type="button" class="close-btn"
+                    data-close="taskDialog" aria-label="Close">×</button>
+            </div>
+
+            <label for="taskName">Task Name</label>
+            <input id="taskName" required maxlength="100"
+                placeholder="e.g. Prepare project report">
+
+            <label for="taskProject">Project</label>
+            <select id="taskProject" required></select>
+
+            <label for="taskAssignee">Assigned To</label>
+            <input id="taskAssignee" required maxlength="60"
+                placeholder="Team member name">
+
+            <label for="taskDeadline">Deadline</label>
+            <input type="date" id="taskDeadline" required>
+
+            <label for="taskStatus">Status</label>
+            <select id="taskStatus">
+                <option value="To Do">To Do</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+            </select>
+
+            <div class="dialog-actions">
+                <button type="button" class="secondary-btn"
+                    data-close="taskDialog">Cancel</button>
+                <button type="submit" class="primary-btn">Save Task</button>
+            </div>
+        </form>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
